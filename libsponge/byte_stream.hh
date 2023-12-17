@@ -21,7 +21,7 @@ class ByteStream {
     size_t _capacity;         //!< The capacity of the stream
     size_t _written_cnt;  //!< The number of bytes written
     size_t _read_cnt;     //!< The number of bytes read
-    int _head, _tail;     //!< The head and tail of the buffer
+    size_t _head, _tail;     //!< The head and tail of the buffeyr
     bool _input_ended_flag = false;  //!< Flag indicating that the input has ended
     bool _error = false;  //!< Flag indicating that the stream suffered an error.
 
