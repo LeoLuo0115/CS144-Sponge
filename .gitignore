@@ -3,6 +3,7 @@
 /build
 /.ccls-cache
 /.cache
+/.vscode
 CMakeCache.txt
 CMakeFiles
 Makefile
