@@ -78,7 +78,7 @@ void ByteStream::pop_output(const size_t len) {
 string ByteStream::read(const size_t len) {
     string res = peek_output(len);
     pop_output(len);
-    // _read_cnt += res.size(); this is wrong 
+    // _read_cnt += res.size(); this is wrong
     return res;
 }
 
