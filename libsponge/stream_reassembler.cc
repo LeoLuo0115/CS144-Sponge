@@ -42,15 +42,16 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
     size_t loop_index = actual_index % _capacity;
 
     // Here we should consider the situation that the we do not have enough space to store the data
-    size_t first_unacceptable_idx = start_index + _capacity - _output.buffer_size();
-    if (first_unacceptable_idx <= loop_index) {
+    size_t first_unacceptable_idx = _next_index + _capacity - _output.buffer_size();
+    if (first_unacceptable_idx  <= actual_index) {
         return;
     }
 
     // if we do have enough space to store the data, we should calculate how much reamining space we have
     // size of vaild data
     size_t loop_size = data.size() - data_index;
-    loop_size = loop_size > _capacity - _output.buffer_size() ? _capacity - _output.buffer_size() : loop_size;
+    // loop_size = loop_size > _capacity - _output.buffer_size() ? _capacity - _output.buffer_size() : loop_size;
+    loop_size = min(loop_size, first_unacceptable_idx - actual_index);
 
     // Corner case: when the data is empty. This is important
     // Because the below iteration does not consider

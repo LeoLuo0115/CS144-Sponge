@@ -18,7 +18,7 @@ class StreamReassembler {
     size_t _unassembled_bytes;    //!< The number of bytes in the substrings stored but not yet reassembled
     bool _should_eof;             //!< Flag about telling ByteStream to end input
     std::vector<char> _stream{};  //!< The window
-    std::vector<bool> _dirty{};   //!< A table to indicate whether the element is stored
+    std::vector<bool> _dirty{};   //!< A bitmap to indicate whether the element is stored
     size_t next(size_t ptr) { return (ptr + 1) % _capacity; }  //!< Get the next index of the window
 
   public:
