@@ -6,7 +6,7 @@
 // automated checks run by `make check_lab2`.
 
 template <typename... Targs>
-void DUMMY_CODE(Targs &&... /* unused */) {}
+void DUMMY_CODE(Targs &&.../* unused */) {}
 
 using namespace std;
 
@@ -14,8 +14,11 @@ using namespace std;
 //! \param n The input absolute 64-bit sequence number
 //! \param isn The initial sequence number
 WrappingInt32 wrap(uint64_t n, WrappingInt32 isn) {
-    DUMMY_CODE(n, isn);
-    return WrappingInt32{0};
+    // fist strong cast to uint32_t, then add to isn
+    // the operator is overloaded in wrapping_integers.hh
+    // unsigned integer would automatically overflow
+    // DUMMY_CODE(n, isn);
+    return isn + static_cast<uint32_t>(n);
 }
 
 //! Transform a WrappingInt32 into an "absolute" 64-bit sequence number (zero-indexed)
@@ -28,7 +31,11 @@ WrappingInt32 wrap(uint64_t n, WrappingInt32 isn) {
 //! runs from the local TCPSender to the remote TCPReceiver and has one ISN,
 //! and the other stream runs from the remote TCPSender to the local TCPReceiver and
 //! has a different ISN.
+//! Convert seqno to absolute seqno.
 uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
-    DUMMY_CODE(n, isn, checkpoint);
-    return {};
+    // DUMMY_CODE(n, isn, checkpoint);
+    WrappingInt32 c = wrap(checkpoint, isn);
+    int32_t offset = n.raw_value() - c.raw_value();
+    int64_t res = checkpoint + offset;
+    return res >= 0 ? res : res + (1ul << 32);
 }
