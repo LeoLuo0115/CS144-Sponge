@@ -21,6 +21,38 @@ class TCPConnection {
     //! in case the remote TCPConnection doesn't know we've received its whole stream?
     bool _linger_after_streams_finish{true};
 
+    //! the flag to indicate whether TCPConnection alive
+    bool _active{true};
+
+    //! the time interval since last segment received.
+    size_t _time_since_last_segment_received{};
+
+    //! \brief the helper function for setting the sending segments'
+    //! acknowledge number and window size
+    void set_ack_and_window(TCPSegment &seg);
+
+    //! \brief Pops the segment from the outbound stream and wrap it
+    //! and pushs it into the `_segments_out`.
+    bool send_new_segments();
+
+    //! \brief check whether the inbound stream has been fully assembled
+    //! and ended (Prereq #1)
+    bool check_inbound_stream_assembled_and_ended();
+
+    //! \brief check whether the outbound stream has been ended by the local
+    //! application and fully sent that fact it ended to the remote peer
+    bool check_outbound_stream_ended_and_send_fin();
+
+    //! \brief check whether the outbound stream has been fully acknowledged by
+    //! the remote peer
+    bool check_outbound_fully_acknowledged();
+
+    //! \brief send rst segment
+    void send_rst_flag_segment();
+
+    //! \brief set the error and change `_active` to false
+    void set_error();
+
   public:
     //! \name "Input" interface for the writer
     //!@{
