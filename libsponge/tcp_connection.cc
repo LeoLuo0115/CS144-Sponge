@@ -53,6 +53,7 @@ bool TCPConnection::send_new_segments() {
     return is_really_send;
 }
 
+// if the rst (reset) flag is set, sets both the inbound and outbound streams to the error state and kills the connection permanently
 void TCPConnection::send_rst_flag_segment() {
     // we need an empty segment to send the rst flag
     _sender.send_empty_segment();
@@ -92,16 +93,15 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
 
     // If the inbound stream ends before the `TCPConnection` has reached EOF
     // on its outbound stream, `_linger_after_streams_finish` should be false
-    // This means this TCPConnection is not the first one to close the connection, so we go to CLOSE_WAIT state (passive
-    // close)
+    // This means this TCPConnection is not the first one to close the connection, so we go to CLOSE_WAIT state (passive close)
     if (check_inbound_stream_assembled_and_ended() && !_sender.stream_in().eof()) {
         _linger_after_streams_finish = false;
     }
 
-    // If the segment have ackno, we need to update the sender, we call ack_received function to delete the segments
-    // that have been acked
+    // If the segment have ackno, we need to update the sender, we call ack_received function to delete the segments that have been acked
     if (seg.header().ack) {
         // Corner case: When listening, we should drop all the ACK.
+        // ackno() returns the next ackno that the receiver is expecting
         if (!_receiver.ackno().has_value())
             return;
         _sender.ack_received(seg.header().ackno, seg.header().win);
@@ -154,7 +154,9 @@ void TCPConnection::tick(const size_t ms_since_last_tick) {
         check_outbound_fully_acknowledged()) {
         if (!_linger_after_streams_finish) {
             _active = false;
-        } else if (_time_since_last_segment_received >= 10 * _cfg.rt_timeout) {
+        }
+        // it has been at least 10 times the initial retransmission timeout ( cfg.rt timeout) since the local peer has received any segments from the remote peer.
+        else if (_time_since_last_segment_received >= 10 * _cfg.rt_timeout) {
             _active = false;
         }
     }
