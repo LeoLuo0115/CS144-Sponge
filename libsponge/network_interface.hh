@@ -7,6 +7,7 @@
 
 #include <optional>
 #include <queue>
+#include <list>
 
 //! \brief A "network interface" that connects IP (the internet layer, or network layer)
 //! with Ethernet (the network access layer, or link layer).
@@ -39,6 +40,20 @@ class NetworkInterface {
 
     //! outbound queue of Ethernet frames that the NetworkInterface wants sent
     std::queue<EthernetFrame> _frames_out{};
+    
+    // ip -> (EthernetAddress, time)
+    std::unordered_map<uint32_t, std::pair<EthernetAddress, size_t>> _arp_table{};
+ 
+    //  If the network already interface already sent an ARP request about the same IP address in the last five seconds, don’t send a second request
+    // ip -> time, make sure do not over send APR request
+    std::unordered_map<uint32_t, size_t> waiting_msg{};
+    
+    // Datagram does not know the Ethernet destination address, we need to store it in the cache and send it when we get the ARP reply
+    // <ip, datagram>
+    std::list<std::pair<Address, InternetDatagram>> _dgram_cache{};
+    
+    // time counter for when did we send the last ARP request
+    size_t _time = 0;
 
   public:
     //! \brief Construct a network interface with given Ethernet (network-access-layer) and IP (internet-layer) addresses
@@ -62,6 +77,9 @@ class NetworkInterface {
 
     //! \brief Called periodically when time elapses
     void tick(const size_t ms_since_last_tick);
+    
+    //1 \brief send ARP request in boradcast
+    EthernetFrame broadcast_frame(uint32_t ip);
 };
 
 #endif  // SPONGE_LIBSPONGE_NETWORK_INTERFACE_HH
