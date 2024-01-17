@@ -1,6 +1,39 @@
-For build prereqs, see [the CS144 VM setup instructions](https://web.stanford.edu/class/cs144/vm_howto).
+# Stanford CS144 Fall2021
+CS144 Sponge version 2021, Lab 0-7 initial code is under the corresponding branch, you can complete the experiment by cloning this project and then rolling back.
+
+See labs_pdf_21 folder for supporting experiments.
+
+## Finished
+- Lab 0: Networking Warmup
+    - sponge/apps/webget.cc
+    - sponge/libsponge/byte_stream.cc
+    - sponge/libsponge/byte_stream.hh
+- Lab 1: Stitching substrings into a byte stream
+    - sponge/libsponge/stream_reassembler.cc
+    - sponge/libsponge/stream_reassembler.hh
+- Lab 2: the TCP receiver
+    - sponge/libsponge/wrapping_integers.cc
+    - sponge/libsponge/wrapping_integers.hh
+    - sponge/libsponge/tcp_receiver.cc
+    - sponge/libsponge/tcp_receiver.hh
+- Lab 3: the TCP sender
+    - sponge/libsponge/tcp_sender.cc
+    - sponge/libsponge/tcp_sender.hh
+- Lab 4: the TCP connection
+    - sponge/libsponge/tcp_connection.cc
+    - sponge/libsponge/tcp_sender.hh
+- Lab 5: the network interface
+    - sponge/libsponge/network_interface.cc
+    - sponge/libsponge/network_interface.hh
+    -  I can pass all the tests on my WSL, except CS144 version of webget (FullStackSocket) because of timeout. (WSL + ubuntu may be the issue)
+- Lab 6: the IP router
+    - sponge/libsponge/router.cc
+    - sponge/libsponge/router.hh
+
+
 
 ## Sponge quickstart
+For build prereqs, see [the CS144 VM setup instructions](https://web.stanford.edu/class/cs144/vm_howto).
 
 To set up your build directory:
 
